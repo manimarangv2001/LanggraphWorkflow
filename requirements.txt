@@ -1,0 +1,7 @@
+requests
+pandas
+python-dotenv
+fastapi
+uvicorn
+langgraph
+langgraph-checkpoint-sqlite

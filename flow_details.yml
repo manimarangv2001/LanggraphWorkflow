@@ -1,0 +1,8 @@
+flows:
+  - short_description: "AD Group Creation - Security"
+    flow_name: "SecurityGroupCreation"
+    reassignment_group: "a175ca51fba3da101d38f5d56eefdc61"
+ 
+  - short_description: "Domain Account Creation"
+    flow_name: "ADAccountCreation"
+    reassignment_group: "a175ca51fba3da101d38f5d56eefdc61"
