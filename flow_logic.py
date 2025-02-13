@@ -45,6 +45,7 @@ class FlowState(TypedDict):
     action_index: int
     next_action: bool
     error_occurred: bool
+    reassignment_group: str
  
 # -----------------------------------------------------------------------
 # Define TicketState
@@ -57,7 +58,7 @@ class TicketState(IntEnum):
     CLOSED_INCOMPLETE = 4
     CLOSED_SKIPPED = 5
     RESOLVED = 6
- 
+
 # -----------------------------------------------------------------------
 # Asynchronous Helper Functions
 # -----------------------------------------------------------------------
@@ -160,7 +161,7 @@ async def initialize_flow_state(state: FlowState) -> FlowState:
     logging.debug(f"Flow name determined: {state['flow_name']}")
  
     # Optionally store the reassignment_group in state["additional_variables"]
-    state["additional_variables"]["reassignment_group"] = mapping_data["reassignment_group"]
+    state["reassignment_group"] = mapping_data["reassignment_group"]
  
     # Initialize state fields
     state["actions_list"] = []
@@ -170,6 +171,7 @@ async def initialize_flow_state(state: FlowState) -> FlowState:
     state["action_index"] = 0
     state["next_action"] = False
     state["error_occurred"] = False
+    state["additional_variables"] = {}
  
     # Mark ticket as WORK_IN_PROGRESS
     updated_state = await update_ticket_state(state, TicketState.WORK_IN_PROGRESS)
@@ -335,13 +337,11 @@ async def update_servicenow_worknotes(state: FlowState) -> FlowState:
     logging.debug(f"State after updating worknotes: {state}")
     return state
  
-async def retrieve_reassignment_group(state: FlowState):
-    return state["additional_variables"].get("reassignment_group", "")
- 
+
 async def update_servicenow_assignment_group(state: FlowState):
     try:
         task_response = state["task_response"]
-        reassignment_group_sys_id = await retrieve_reassignment_group(state)
+        reassignment_group_sys_id = state["reassignment_group"]
         data = {"assignment_group": reassignment_group_sys_id}
  
         table_name = task_response["result"][0]["sys_class_name"]

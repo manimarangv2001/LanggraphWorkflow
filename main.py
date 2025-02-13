@@ -22,7 +22,7 @@ async def startup_event():
 async def read_root():
     return {"message": "LangGraph Assistant is Running (Async)!"}
 
-@app.get("/api/task")
+@app.post("/api/task")
 async def execute_flow(task_data: APIResponse):
     """
     Endpoint to handle the flow for a given "number" (e.g. the ServiceNow Task Number).
@@ -33,7 +33,7 @@ async def execute_flow(task_data: APIResponse):
         task_response = task_data.model_dump()
         
         # Construct a unique thread_id. For example:
-        thread_id = "task_" + task_data.get("number", "unknown")
+        thread_id = "task_" + task_response["result"][0]["number"]
  
         # Now invoke the graph asynchronously
         output = graph.ainvoke(

@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 class Task(BaseModel):
+    sys_id: Optional[str]
     parent: Optional[str]
     made_sla: str
     watch_list: Optional[str]
